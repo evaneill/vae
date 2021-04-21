@@ -67,10 +67,14 @@ class DeterministicLayer(nn.Module):
 
 		self.fc = Linear(prev_layer_neurons,n_neurons)
 
-		try:
+		if hasattr(torch,activation):
 			self.activation = getattr(torch,activation)
-		except:
+		if hasattr(F,activation):
 			self.activation = getattr(F,activation)
+		else:
+			msg = f"Activation {activation} can't be found."
+			print(msg)
+			raise Exception(msg)
 
 	def forward(self,input_activations):
 		return self.activation(self.fc(input_activations)), None, None
